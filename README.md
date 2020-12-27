@@ -59,12 +59,11 @@ src/
 |     Model      | Number of labeled examples | Augmentation | Top-1 Accuracy |
 | :------------: | :------------------------: | :----------: | :------------: |
 |   ResNet-50    |           40000            | Crop & Filp  |      73%       |
-|   ResNet-50    |            4000            | Crop & Flip  |   48%  -> 20   |
-| ResNet-50(UDA) |            4000            | RandAugment  |       -        |
+|   ResNet-50    |            4000            | Crop & Flip  |      48%       |
+| ResNet-50(UDA) |            4000            | RandAugment  |      50%       |
 
 -  GPU: (Nvidia RTX 2080-ti)*2
 -  ResNet-50 is not pretrained in this experiments.
--  Training Signal Annealing is not applied in this implementation.
 
 ## Reference
 - [[Paper] Unsupervised Data Augmentation for Consistency Training](https://arxiv.org/abs/1904.12848)

@@ -37,7 +37,7 @@ class Trainer:
         self.lr = config["lr"]
         self.optimizer = self.get_optimizer(config["optimizer"])
         self.lr_scheduler = optim.lr_scheduler.ReduceLROnPlateau(
-            self.optimizer, mode="min", factor=0.1, patience=10
+            self.optimizer, mode="min", factor=0.1, patience=5
         )
         self.do_uda = config["do_uda"]
         self.batch_size_l = config["batch_size_l"]
@@ -77,6 +77,7 @@ class Trainer:
         self.confidence = config["confidence"]
         self.lmda = config["lambda"]
         self.tsa = config["tsa"]
+        self.tsa_max_step = config["tsa_max_step"]
 
         assert self.tsa in [
             "linear",
@@ -95,7 +96,7 @@ class Trainer:
 
     def get_tsa_threshold(self):
         K = self.num_classes
-        T = 2000  # temporal setting in this implementation.
+        T = self.tsa_max_step
 
         alpha = None
         if self.tsa == "exp":
@@ -168,7 +169,7 @@ class Trainer:
                 output_augmented = self.model(img_augmented)
 
                 pred_unlabeled = F.softmax(output_unlabeled / self.temperature, dim=1)
-                pred_augmented = F.log_softmax(output_augmented, dim=1)
+                pred_augmented = F.softmax(output_augmented, dim=1)
                 unlabeled_prob = pred_unlabeled.max(dim=1)[0]
                 unlabeled_mask = unlabeled_prob.ge(self.confidence)
 
@@ -189,10 +190,6 @@ class Trainer:
             self.optimizer.zero_grad()
             sup_loss = self.criterion(output, label) * tsa_mask
             loss = sup_loss.mean() + self.lmda * consistency_loss
-            # import IPython
-
-            # IPython.embed()
-            # exit(1)
             loss.backward()
             self.optimizer.step()
 

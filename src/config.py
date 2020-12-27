@@ -14,9 +14,9 @@ def load_config():
     parser.add_argument("--seed", type=int, default=7)
     parser.add_argument("--ckpt_path", type=str, default="./checkpoints/")
     parser.add_argument("--num_classes", type=int, default=10)
-    parser.add_argument("--lr", type=float, default=0.001)
+    parser.add_argument("--lr", type=float, default=0.03)
     parser.add_argument("--momentum", type=float, default=0.9)
-    parser.add_argument("--weight_decay", type=float, default=0.999)
+    parser.add_argument("--weight_decay", type=float, default=0.9)
     parser.add_argument("--optimizer", type=str, default="adamw")
     parser.add_argument("--epoch", type=int, default=200)
     parser.add_argument("--eval_step", type=int, default=10)
@@ -51,10 +51,16 @@ def load_config():
     parser.add_argument(
         "--confidence",
         type=float,
-        default=0.6,
+        default=0.5,
         help="Threshold for unlabeled confidence based masking",
     )
     parser.add_argument("--tsa", type=str, default="linear", help="tsa scheduling(linear/exp/log)")
+    parser.add_argument(
+        "--tsa_max_step",
+        type=int,
+        default=2000,
+        help="Max step for calaulating tsa schedule. Originally it should be max step of your training, but fixed in this implementation.",
+    )
 
     args = parser.parse_args()
     return args
